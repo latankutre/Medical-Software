@@ -1,4 +1,3 @@
-// MedicalDashboard.jsx
 import React, { useState } from 'react';
 import {
   Box,
@@ -13,7 +12,9 @@ import {
   ListItemIcon,
   ListItemText,
   Tooltip,
-  Button
+  Button,
+  useTheme,
+  useMediaQuery
 } from '@mui/material';
 
 import {
@@ -26,7 +27,9 @@ import {
   BarChart as ReportIcon,
   QrCodeScanner as BarcodeIcon,
   Security as SecurityIcon,
-  Logout as LogoutIcon
+  Logout as LogoutIcon,
+  ChevronLeft as ChevronLeftIcon,
+  ChevronRight as ChevronRightIcon,
 } from '@mui/icons-material';
 
 import { Routes, Route, useNavigate } from 'react-router-dom';
@@ -44,6 +47,8 @@ const drawerWidth = 240;
 
 const MedicalDashboard = () => {
   const [drawerOpen, setDrawerOpen] = useState(true);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const navigate = useNavigate();
 
   const handleDrawerToggle = () => {
@@ -62,7 +67,7 @@ const MedicalDashboard = () => {
   ];
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       <CssBaseline />
 
       {/* Top App Bar */}
@@ -85,9 +90,12 @@ const MedicalDashboard = () => {
         </Toolbar>
       </AppBar>
 
-      {/* Side Drawer */}
+      {/* Responsive Drawer */}
       <Drawer
-        variant="permanent"
+        variant={isMobile ? 'temporary' : 'permanent'}
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        ModalProps={{ keepMounted: true }}
         sx={{
           width: drawerOpen ? drawerWidth : 70,
           flexShrink: 0,
@@ -100,7 +108,6 @@ const MedicalDashboard = () => {
             color: '#fff',
           },
         }}
-        open={drawerOpen}
       >
         <Toolbar />
         <List>
@@ -109,7 +116,7 @@ const MedicalDashboard = () => {
               <ListItemButton
                 onClick={() => {
                   navigate(item.path);
-                  setDrawerOpen(false); // 👉 Minimize sidebar after menu click
+                  setDrawerOpen(false); // Minimize on both mobile and desktop
                 }}
                 sx={{ color: '#fff', '&:hover': { bgcolor: '#2e2f45' } }}
               >
@@ -124,6 +131,23 @@ const MedicalDashboard = () => {
             </Tooltip>
           ))}
         </List>
+
+        {/* Manual Expand/Collapse Button */}
+        {!isMobile && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', py: 1 }}>
+            <IconButton
+              onClick={handleDrawerToggle}
+              sx={{
+                color: '#fff',
+                bgcolor: '#2e2f45',
+                '&:hover': { bgcolor: '#3b3c58' },
+                transition: 'all 0.3s',
+              }}
+            >
+              {drawerOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+            </IconButton>
+          </Box>
+        )}
       </Drawer>
 
       {/* Main Content */}
@@ -131,10 +155,11 @@ const MedicalDashboard = () => {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
+          overflowY: 'auto',
+          height: '100vh',
           mt: 8,
           backgroundColor: '#f9fafc',
-          minHeight: '100vh',
+          p: 3
         }}
       >
         <Routes>

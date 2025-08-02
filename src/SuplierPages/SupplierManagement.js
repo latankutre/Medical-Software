@@ -1,28 +1,32 @@
 // src/SuplierPages/SupplierManagement.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
   Grid,
   Container,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import AddBusinessIcon from '@mui/icons-material/AddBusiness';
 import HistoryIcon from '@mui/icons-material/History';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import { motion } from 'framer-motion';
 
-// Reusable motion button
+
+// ✅ IMPORT THE CORRECT PAGE
+import SupplierMaster from './SupplierMaster'; // ✅ Make sure the path is correct
+import PurchaseHistory from './PurchaseHistory';
+import PaymentTracking from './PaymentTracking';
+
 const MotionButton = motion.button;
 
 const SupplierManagement = () => {
-  const navigate = useNavigate();
+  const [activeSection, setActiveSection] = useState(null);
 
   const buttonStyle = {
     width: '100%',
     padding: '18px 20px',
     borderRadius: '20px',
-    fontSize: '1.1rem',
+    fontSize: '1.0rem',
     fontWeight: 600,
     display: 'flex',
     alignItems: 'center',
@@ -46,18 +50,13 @@ const SupplierManagement = () => {
             fontWeight="bold"
             color="primary"
             gutterBottom
-            sx={{
-              textShadow: '1px 1px 2px rgba(0,0,0,0.2)',
-              fontFamily: 'Segoe UI, sans-serif',
-              letterSpacing: 1,
-            }}
           >
             Supplier Management Dashboard
           </Typography>
         </motion.div>
 
         <Grid container spacing={4} justifyContent="center" sx={{ mt: 3 }}>
-          {/* Add New Supplier */}
+          {/* ✅ Add Supplier Button */}
           <Grid item xs={12} sm={6} md={4}>
             <MotionButton
               whileHover={{ scale: 1.05 }}
@@ -68,14 +67,13 @@ const SupplierManagement = () => {
                 border: '2px solid #1976d2',
                 color: '#1976d2',
               }}
-              onClick={() => navigate('/supplier-master')}
+              onClick={() => setActiveSection('add')}
             >
               <AddBusinessIcon />
               Add New Supplier
             </MotionButton>
           </Grid>
 
-          {/* Purchase History */}
           <Grid item xs={12} sm={6} md={4}>
             <MotionButton
               whileHover={{ scale: 1.05 }}
@@ -86,14 +84,13 @@ const SupplierManagement = () => {
                 border: '2px solid #388e3c',
                 color: '#388e3c',
               }}
-              onClick={() => navigate('/purchase-history')}
+              onClick={() => setActiveSection('history')}
             >
               <HistoryIcon />
               Purchase History
             </MotionButton>
           </Grid>
 
-          {/* Payment Tracking */}
           <Grid item xs={12} sm={6} md={4}>
             <MotionButton
               whileHover={{ scale: 1.05 }}
@@ -104,13 +101,20 @@ const SupplierManagement = () => {
                 border: '2px solid #f57c00',
                 color: '#f57c00',
               }}
-              onClick={() => navigate('/payment-tracking')}
+              onClick={() => setActiveSection('payment')}
             >
               <PaymentsIcon />
               Payment Tracking
             </MotionButton>
           </Grid>
         </Grid>
+
+        {/* ✅ Render correct section */}
+        <Box sx={{ mt: 3 }}>
+          {activeSection === 'add' && <SupplierMaster />}         {/* ✅ Correct form */}
+          {activeSection === 'history' && <PurchaseHistory />}
+          {activeSection === 'payment' && <PaymentTracking />}
+        </Box>
       </Box>
     </Container>
   );

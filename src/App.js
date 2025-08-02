@@ -15,6 +15,7 @@ import Customer from './Sidebar/Customer';
 import ReportAnalysis from './Sidebar/ReportAnalysis';
 import BarcodeIntegration from './Sidebar/BarcodeIntegration';
 import SecurityAccess from './Sidebar/SecurityAccess';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   return (
@@ -38,6 +39,8 @@ function App() {
           <Route path="report-analysis" element={<ReportAnalysis />} />
           <Route path="barcode-integration" element={<BarcodeIntegration />} />
           <Route path="security-access" element={<SecurityAccess />} />
+          {/* Optional: Default redirect */}
+         <Route path="*" element={<SupplierManagement />} />
         </Route>
       </Routes>
     </Router>
