@@ -136,7 +136,7 @@ const PurchaseHistory = () => {
               align={isMobile ? 'center' : 'left'}
               mb={isMobile ? 2 : 0}
             >
-              Purchase History per Supplier
+              Purchase
             </Typography>
           </Grid>
 
