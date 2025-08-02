@@ -83,7 +83,7 @@ const PaymentDueTracking = () => {
       ]);
 
       autoTable(doc, {
-        head: [['Due Date', 'Amount (₹)', 'Status']],
+        head: [['Due Date','Items', 'Amount (₹)', 'Status']],
         body: rows,
         startY: y + 6,
         styles: { fontSize: 10 },

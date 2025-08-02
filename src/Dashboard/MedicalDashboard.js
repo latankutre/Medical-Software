@@ -14,7 +14,7 @@ import {
   Tooltip,
   Button,
   useTheme,
-  useMediaQuery
+  useMediaQuery,
 } from '@mui/material';
 
 import {
@@ -70,7 +70,7 @@ const MedicalDashboard = () => {
     <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
       <CssBaseline />
 
-      {/* Top App Bar */}
+      {/* AppBar */}
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, bgcolor: '#212235' }}>
         <Toolbar>
           <IconButton edge="start" color="inherit" onClick={handleDrawerToggle}>
@@ -90,88 +90,113 @@ const MedicalDashboard = () => {
         </Toolbar>
       </AppBar>
 
-      {/* Responsive Drawer */}
-      <Drawer
-        variant={isMobile ? 'temporary' : 'permanent'}
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        ModalProps={{ keepMounted: true }}
-        sx={{
-          width: drawerOpen ? drawerWidth : 70,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
+      {/* Drawer + Content */}
+      <Box sx={{ display: 'flex', flexGrow: 1, pt: 8 }}>
+        {/* Drawer */}
+        <Drawer
+          variant={isMobile ? 'temporary' : 'permanent'}
+          open={drawerOpen}
+          onClose={() => setDrawerOpen(false)}
+          ModalProps={{ keepMounted: true }}
+          sx={{
             width: drawerOpen ? drawerWidth : 70,
-            transition: 'width 0.3s',
-            overflowX: 'hidden',
-            boxSizing: 'border-box',
-            bgcolor: '#1b1c2e',
-            color: '#fff',
-          },
-        }}
-      >
-        <Toolbar />
-        <List>
-          {menuItems.map((item) => (
-            <Tooltip key={item.label} title={!drawerOpen ? item.label : ''} placement="right">
-              <ListItemButton
-                onClick={() => {
-                  navigate(item.path);
-                  setDrawerOpen(false); // Minimize on both mobile and desktop
+            flexShrink: 0,
+            '& .MuiDrawer-paper': {
+              width: drawerOpen ? drawerWidth : 70,
+              transition: 'width 0.3s',
+              overflowX: 'hidden',
+              boxSizing: 'border-box',
+              bgcolor: '#1b1c2e',
+              color: '#fff',
+            },
+          }}
+        >
+          <Toolbar />
+          <List>
+            {menuItems.map((item) => (
+              <Tooltip key={item.label} title={!drawerOpen ? item.label : ''} placement="right">
+                <ListItemButton
+                  onClick={() => {
+                    navigate(item.path);
+                    if (isMobile) setDrawerOpen(false);
+                  }}
+                  sx={{ color: '#fff', '&:hover': { bgcolor: '#2e2f45' } }}
+                >
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  {drawerOpen && (
+                    <ListItemText
+                      primary={item.label}
+                      primaryTypographyProps={{ fontWeight: 600 }}
+                    />
+                  )}
+                </ListItemButton>
+              </Tooltip>
+            ))}
+          </List>
+          {/* Collapse button */}
+          {!isMobile && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 1 }}>
+              <IconButton
+                onClick={handleDrawerToggle}
+                sx={{
+                  color: '#fff',
+                  bgcolor: '#2e2f45',
+                  '&:hover': { bgcolor: '#3b3c58' },
                 }}
-                sx={{ color: '#fff', '&:hover': { bgcolor: '#2e2f45' } }}
               >
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                {drawerOpen && (
-                  <ListItemText
-                    primary={item.label}
-                    primaryTypographyProps={{ fontWeight: 600 }}
-                  />
-                )}
-              </ListItemButton>
-            </Tooltip>
-          ))}
-        </List>
+                {drawerOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+              </IconButton>
+            </Box>
+          )}
+        </Drawer>
 
-        {/* Manual Expand/Collapse Button */}
-        {!isMobile && (
-          <Box sx={{ display: 'flex', justifyContent: 'center', py: 1 }}>
-            <IconButton
-              onClick={handleDrawerToggle}
-              sx={{
-                color: '#fff',
-                bgcolor: '#2e2f45',
-                '&:hover': { bgcolor: '#3b3c58' },
-                transition: 'all 0.3s',
-              }}
-            >
-              {drawerOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-            </IconButton>
+        {/* Main content + footer */}
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            flexGrow: 1,
+            overflow: 'hidden',
+          }}
+        >
+          {/* Scrollable content area */}
+          <Box
+            sx={{
+              flexGrow: 1,
+              overflowY: 'auto',
+              backgroundColor: '#f9fafc',
+              p: 3,
+            }}
+          >
+            <Routes>
+              <Route path="/inventory" element={<Inventory />} />
+              <Route path="/sales" element={<Sales />} />
+              <Route path="/purchase" element={<Purchase />} />
+              <Route path="/customer" element={<Customer />} />
+              <Route path="/supplier" element={<SupplierManagement />} />
+              <Route path="/reports" element={<ReportAnalysis />} />
+              <Route path="/barcode" element={<BarcodeIntegration />} />
+              <Route path="/security" element={<SecurityAccess />} />
+            </Routes>
           </Box>
-        )}
-      </Drawer>
 
-      {/* Main Content */}
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          overflowY: 'auto',
-          height: '100vh',
-          mt: 8,
-          backgroundColor: '#f9fafc',
-          p: 3
-        }}
-      >
-        <Routes>
-          <Route path="/inventory" element={<Inventory />} />
-          <Route path="/sales" element={<Sales />} />
-          <Route path="/purchase" element={<Purchase />} />
-          <Route path="/customer" element={<Customer />} />
-          <Route path="/supplier" element={<SupplierManagement />} />
-          <Route path="/reports" element={<ReportAnalysis />} />
-          <Route path="/barcode" element={<BarcodeIntegration />} />
-          <Route path="/security" element={<SecurityAccess />} />
-        </Routes>
+          {/* Sticky Footer */}
+          <Box
+            component="footer"
+            sx={{
+              height: '50px',
+              backgroundColor: '#212235',
+              color: '#fff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '14px',
+              borderTop: '1px solid #3b3c58',
+            }}
+          >
+            © 2025 Medical Shop Software. All rights reserved.
+          </Box>
+        </Box>
       </Box>
     </Box>
   );
