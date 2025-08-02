@@ -52,7 +52,13 @@ const MedicalDashboard = () => {
   const navigate = useNavigate();
 
   const handleDrawerToggle = () => {
-    setDrawerOpen(!drawerOpen);
+    setDrawerOpen((prev) => !prev);
+  };
+
+  const handleMenuClick = (path) => {
+    navigate(path);
+    if (!isMobile) setDrawerOpen(false); // Collapse on desktop
+    if (isMobile) setDrawerOpen(false);  // Also close temporary drawer
   };
 
   const menuItems = [
@@ -90,7 +96,7 @@ const MedicalDashboard = () => {
         </Toolbar>
       </AppBar>
 
-      {/* Drawer + Content */}
+      {/* Drawer and Main Content */}
       <Box sx={{ display: 'flex', flexGrow: 1, pt: 8 }}>
         {/* Drawer */}
         <Drawer
@@ -103,7 +109,7 @@ const MedicalDashboard = () => {
             flexShrink: 0,
             '& .MuiDrawer-paper': {
               width: drawerOpen ? drawerWidth : 70,
-              transition: 'width 0.3s',
+              transition: 'width 0.3s ease-in-out',
               overflowX: 'hidden',
               boxSizing: 'border-box',
               bgcolor: '#1b1c2e',
@@ -116,10 +122,7 @@ const MedicalDashboard = () => {
             {menuItems.map((item) => (
               <Tooltip key={item.label} title={!drawerOpen ? item.label : ''} placement="right">
                 <ListItemButton
-                  onClick={() => {
-                    navigate(item.path);
-                    if (isMobile) setDrawerOpen(false);
-                  }}
+                  onClick={() => handleMenuClick(item.path)}
                   sx={{ color: '#fff', '&:hover': { bgcolor: '#2e2f45' } }}
                 >
                   <ListItemIcon>{item.icon}</ListItemIcon>
@@ -133,7 +136,8 @@ const MedicalDashboard = () => {
               </Tooltip>
             ))}
           </List>
-          {/* Collapse button */}
+
+          {/* Collapse/Expand Toggle */}
           {!isMobile && (
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 1 }}>
               <IconButton
@@ -150,7 +154,7 @@ const MedicalDashboard = () => {
           )}
         </Drawer>
 
-        {/* Main content + footer */}
+        {/* Content + Sticky Footer */}
         <Box
           sx={{
             display: 'flex',
@@ -159,7 +163,7 @@ const MedicalDashboard = () => {
             overflow: 'hidden',
           }}
         >
-          {/* Scrollable content area */}
+          {/* Scrollable Main Content */}
           <Box
             sx={{
               flexGrow: 1,
